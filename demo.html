@@ -133,9 +133,10 @@
       <div class="phone-inner">
         <div class="tab-bar">
           <div class="tab active" onclick="showTab('feed',this)">📰 פיד</div>
-          <div class="tab" onclick="showTab('watchlist',this)">⭐ Watchlist</div>
-          <div class="tab" onclick="showTab('reports',this)">🤖 דוחות</div>
-          <div class="tab" onclick="showTab('settings',this)">⚙️ הגדרות</div>
+          <div class="tab" onclick="showTab('watchlist',this)">⭐ Watch</div>
+          <div class="tab" onclick="showTab('tipranks',this)">🎯 Tips</div>
+          <div class="tab" onclick="showTab('reports',this)">🤖 AI</div>
+          <div class="tab" onclick="showTab('login',this)">🔑 כניסה</div>
         </div>
 
         <div id="tab-feed" class="phone-content">
@@ -212,6 +213,106 @@
           <div class="watch-add">
             <input class="watch-input" placeholder="GOOGL / inflation..." id="watchInput">
             <button class="watch-btn" onclick="addWatch()">+</button>
+          </div>
+        </div>
+
+        <!-- TipRanks tab -->
+        <div id="tab-tipranks" class="phone-content" style="display:none;padding:14px">
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:12px">🎯 TipRanks — דירוגי אנליסטים</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <span style="font-weight:700;font-size:14px">AAPL</span>
+                <span style="background:#16a34a;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">Strong Buy</span>
+              </div>
+              <div style="display:flex;gap:6px;margin-bottom:8px">
+                <div style="flex:1;background:#16a34a22;border-radius:6px;padding:6px;text-align:center">
+                  <div style="font-size:18px;font-weight:800;color:#4ade80">18</div>
+                  <div style="font-size:9px;color:#64748b">Buy</div>
+                </div>
+                <div style="flex:1;background:#f59e0b22;border-radius:6px;padding:6px;text-align:center">
+                  <div style="font-size:18px;font-weight:800;color:#fbbf24">5</div>
+                  <div style="font-size:9px;color:#64748b">Hold</div>
+                </div>
+                <div style="flex:1;background:#ef444422;border-radius:6px;padding:6px;text-align:center">
+                  <div style="font-size:18px;font-weight:800;color:#f87171">2</div>
+                  <div style="font-size:9px;color:#64748b">Sell</div>
+                </div>
+              </div>
+              <div style="font-size:11px;color:#94a3b8">Price Target: <span style="color:#38bdf8;font-weight:700">$238.50</span> · Upside: <span style="color:#4ade80">+12.3%</span></div>
+            </div>
+            <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <span style="font-weight:700;font-size:14px">NVDA</span>
+                <span style="background:#16a34a;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">Strong Buy</span>
+              </div>
+              <div style="display:flex;gap:6px;margin-bottom:8px">
+                <div style="flex:1;background:#16a34a22;border-radius:6px;padding:6px;text-align:center">
+                  <div style="font-size:18px;font-weight:800;color:#4ade80">38</div>
+                  <div style="font-size:9px;color:#64748b">Buy</div>
+                </div>
+                <div style="flex:1;background:#f59e0b22;border-radius:6px;padding:6px;text-align:center">
+                  <div style="font-size:18px;font-weight:800;color:#fbbf24">3</div>
+                  <div style="font-size:9px;color:#64748b">Hold</div>
+                </div>
+                <div style="flex:1;background:#ef444422;border-radius:6px;padding:6px;text-align:center">
+                  <div style="font-size:18px;font-weight:800;color:#f87171">0</div>
+                  <div style="font-size:9px;color:#64748b">Sell</div>
+                </div>
+              </div>
+              <div style="font-size:11px;color:#94a3b8">Price Target: <span style="color:#38bdf8;font-weight:700">$1,150</span> · Upside: <span style="color:#4ade80">+28.7%</span></div>
+            </div>
+            <div style="background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <span style="font-weight:700;font-size:14px">TSLA</span>
+                <span style="background:#f59e0b;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">Hold</span>
+              </div>
+              <div style="display:flex;gap:6px;margin-bottom:8px">
+                <div style="flex:1;background:#16a34a22;border-radius:6px;padding:6px;text-align:center">
+                  <div style="font-size:18px;font-weight:800;color:#4ade80">12</div>
+                  <div style="font-size:9px;color:#64748b">Buy</div>
+                </div>
+                <div style="flex:1;background:#f59e0b22;border-radius:6px;padding:6px;text-align:center">
+                  <div style="font-size:18px;font-weight:800;color:#fbbf24">14</div>
+                  <div style="font-size:9px;color:#64748b">Hold</div>
+                </div>
+                <div style="flex:1;background:#ef444422;border-radius:6px;padding:6px;text-align:center">
+                  <div style="font-size:18px;font-weight:800;color:#f87171">8</div>
+                  <div style="font-size:9px;color:#64748b">Sell</div>
+                </div>
+              </div>
+              <div style="font-size:11px;color:#94a3b8">Price Target: <span style="color:#38bdf8;font-weight:700">$285</span> · Upside: <span style="color:#f87171">-4.2%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Login with invite code tab -->
+        <div id="tab-login" class="phone-content" style="display:none;padding:20px">
+          <div style="text-align:center;margin-bottom:24px">
+            <div style="font-size:40px;margin-bottom:8px">📈</div>
+            <div style="font-weight:700;font-size:18px">Market Alerts</div>
+            <div style="font-size:12px;color:#64748b;margin-top:4px">גישה עם קוד בלבד</div>
+          </div>
+          <div id="loginForm">
+            <div style="margin-bottom:12px">
+              <input class="watch-input" placeholder="אימייל" style="width:100%;padding:10px 12px" id="demoEmail">
+            </div>
+            <div style="margin-bottom:12px">
+              <input class="watch-input" type="password" placeholder="סיסמה (8+ תווים)" style="width:100%;padding:10px 12px" id="demoPw">
+            </div>
+            <div id="inviteField" style="margin-bottom:16px;display:none">
+              <input class="watch-input" placeholder="🔑 קוד גישה (קיבלת ממני)" style="width:100%;padding:10px 12px;border-color:#7c3aed" id="demoCode">
+              <div style="font-size:10px;color:#64748b;margin-top:4px">הקוד חד-פעמי ויבוטל לאחר שימוש</div>
+            </div>
+            <button class="watch-btn" style="width:100%;padding:10px;font-size:14px" onclick="demoLogin()">כניסה</button>
+            <div style="text-align:center;margin-top:10px">
+              <span style="font-size:12px;color:#64748b;cursor:pointer" onclick="toggleRegister()">אין לך חשבון? הירשם עם קוד גישה ←</span>
+            </div>
+          </div>
+          <div id="loginSuccess" style="display:none;text-align:center;padding:20px">
+            <div style="font-size:36px">✅</div>
+            <div style="font-weight:700;margin-top:8px">ברוך הבא!</div>
+            <div style="font-size:12px;color:#64748b;margin-top:6px">עובר לפיד החדשות...</div>
           </div>
         </div>
 
@@ -341,7 +442,40 @@
         <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>💰</span>Yahoo Finance</div>
         <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>🔍</span>Seeking Alpha</div>
         <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>💬</span>Telegram channels</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>🎯</span>TipRanks Analyst</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>⚡</span>Finnhub WebSocket</div>
         <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px;color:#64748b"><span>➕</span>הוסף ידנית...</div>
+      </div>
+    </div>
+
+    <!-- Admin: Invite Codes -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🔑</span> ניהול קודי גישה (אדמין)</div>
+      <div style="font-size:12px;color:#64748b;margin-bottom:12px">רק מי שיש לו קוד שאתה יצרת יכול להירשם</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <input class="watch-input" placeholder="הערה: למשל 'לדודי'" id="codeNote" style="flex:1">
+        <select id="codeCount" style="background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;padding:6px 8px;font-size:12px">
+          <option>1</option><option>3</option><option>5</option><option>10</option>
+        </select>
+        <button class="demo-btn" onclick="generateCodes()" style="padding:8px 14px">צור קודים</button>
+      </div>
+      <div id="codesTable" style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;font-size:11px;color:#64748b;padding:0 4px">
+          <span>קוד</span><span>הערה</span><span>סטטוס</span>
+        </div>
+        <div class="code-row" style="display:grid;grid-template-columns:1fr auto auto;gap:8px;background:#0f172a;border-radius:8px;padding:8px;align-items:center">
+          <span style="font-family:monospace;font-size:13px;color:#38bdf8">DEMO2025</span>
+          <span style="font-size:11px;color:#64748b">לדמו</span>
+          <span style="font-size:10px;background:#16a34a22;color:#4ade80;padding:2px 6px;border-radius:10px">זמין</span>
+        </div>
+        <div class="code-row" style="display:grid;grid-template-columns:1fr auto auto;gap:8px;background:#0f172a;border-radius:8px;padding:8px;align-items:center;opacity:.5">
+          <span style="font-family:monospace;font-size:13px;color:#94a3b8;text-decoration:line-through">xK9mPqR2</span>
+          <span style="font-size:11px;color:#64748b">ליוסי</span>
+          <span style="font-size:10px;background:#33415522;color:#64748b;padding:2px 6px;border-radius:10px">שומש</span>
+        </div>
+      </div>
+      <div style="margin-top:12px;font-size:11px;color:#475569;border-top:1px solid #1e293b;padding-top:10px">
+        💡 כל קוד חד-פעמי — מבוטל אוטומטית לאחר הרשמה. ניתן לבטל קוד בכל עת.
       </div>
     </div>
 
@@ -466,6 +600,54 @@ setInterval(() => {
 
 // Auto-show toasts occasionally
 setInterval(showToast, 12000);
+
+function generateCodes() {
+  const note = document.getElementById('codeNote').value.trim() || 'ללא הערה';
+  const count = parseInt(document.getElementById('codeCount').value);
+  const table = document.getElementById('codesTable');
+  for (let i = 0; i < count; i++) {
+    const code = Math.random().toString(36).slice(2, 6).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase();
+    const row = document.createElement('div');
+    row.className = 'code-row';
+    row.style.cssText = 'display:grid;grid-template-columns:1fr auto auto auto;gap:8px;background:#0f172a;border-radius:8px;padding:8px;align-items:center;animation:slideIn .3s ease';
+    row.innerHTML = `
+      <span style="font-family:monospace;font-size:13px;color:#38bdf8">${code}</span>
+      <span style="font-size:11px;color:#64748b">${note}</span>
+      <span style="font-size:10px;background:#16a34a22;color:#4ade80;padding:2px 6px;border-radius:10px">זמין</span>
+      <span style="cursor:pointer;color:#ef4444;font-size:14px" onclick="this.parentElement.remove()">✕</span>
+    `;
+    table.appendChild(row);
+  }
+  document.getElementById('codeNote').value = '';
+}
+
+function toggleRegister() {
+  const inv = document.getElementById('inviteField');
+  const btn = inv.previousElementSibling.previousElementSibling.previousElementSibling.nextElementSibling.nextElementSibling;
+  const isReg = inv.style.display === 'none';
+  inv.style.display = isReg ? 'block' : 'none';
+  document.querySelector('#loginForm button').textContent = isReg ? 'יצירת חשבון' : 'כניסה';
+  document.querySelector('#loginForm span').textContent = isReg ? 'יש לך חשבון? כנס ←' : 'אין לך חשבון? הירשם עם קוד גישה ←';
+}
+
+function demoLogin() {
+  const email = document.getElementById('demoEmail').value.trim();
+  const pw = document.getElementById('demoPw').value;
+  const code = document.getElementById('demoCode').value.trim();
+  const isReg = document.getElementById('inviteField').style.display !== 'none';
+  if (!email || !pw) { alert('נא למלא אימייל וסיסמה'); return; }
+  if (isReg && !code) { alert('נא להזין קוד גישה'); return; }
+  if (isReg && code !== 'DEMO2025') { alert('קוד גישה שגוי. לדמו השתמש ב: DEMO2025'); return; }
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('loginSuccess').style.display = 'block';
+  setTimeout(() => {
+    showTab('feed', document.querySelector('.tab'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.tab').classList.add('active');
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('loginSuccess').style.display = 'none';
+  }, 1800);
+}
 </script>
 </body>
 </html>

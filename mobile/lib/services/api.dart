@@ -14,9 +14,10 @@ class Api {
         if (_token != null) 'Authorization': 'Bearer $_token',
       };
 
-  static Future<String> register(String email, String password) async {
+  static Future<String> register(String email, String password, {required String inviteCode}) async {
     final r = await http.post(Uri.parse('$baseUrl/auth/register'),
-        headers: _headers(), body: jsonEncode({'email': email, 'password': password}));
+        headers: _headers(),
+        body: jsonEncode({'email': email, 'password': password, 'invite_code': inviteCode}));
     if (r.statusCode >= 400) throw Exception(r.body);
     return jsonDecode(r.body)['access_token'] as String;
   }
