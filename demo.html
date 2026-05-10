@@ -132,11 +132,11 @@
     <div class="phone-frame">
       <div class="phone-inner">
         <div class="tab-bar">
-          <div class="tab active" onclick="showTab('feed',this)">📰 פיד</div>
-          <div class="tab" onclick="showTab('watchlist',this)">⭐ Watch</div>
-          <div class="tab" onclick="showTab('tipranks',this)">🎯 Tips</div>
-          <div class="tab" onclick="showTab('reports',this)">🤖 AI</div>
-          <div class="tab" onclick="showTab('login',this)">🔑 כניסה</div>
+          <div class="tab active" onclick="showTab('feed',this)" style="font-size:10px">📰 פיד</div>
+          <div class="tab" onclick="showTab('journal',this)" style="font-size:10px">📒 יומן</div>
+          <div class="tab" onclick="showTab('tipranks',this)" style="font-size:10px">🎯 Tips</div>
+          <div class="tab" onclick="showTab('reports',this)" style="font-size:10px">🤖 AI</div>
+          <div class="tab" onclick="showTab('login',this)" style="font-size:10px">🔑 כניסה</div>
         </div>
 
         <div id="tab-feed" class="phone-content">
@@ -213,6 +213,80 @@
           <div class="watch-add">
             <input class="watch-input" placeholder="GOOGL / inflation..." id="watchInput">
             <button class="watch-btn" onclick="addWatch()">+</button>
+          </div>
+        </div>
+
+        <!-- Trading Journal tab -->
+        <div id="tab-journal" class="phone-content" style="display:none">
+          <!-- Summary bar -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;background:#1e293b;border-bottom:1px solid #334155">
+            <div style="padding:10px;text-align:center;border-left:1px solid #334155">
+              <div style="font-size:18px;font-weight:800;color:#4ade80">+$3,240</div>
+              <div style="font-size:9px;color:#64748b">רווח חודשי</div>
+            </div>
+            <div style="padding:10px;text-align:center;border-left:1px solid #334155">
+              <div style="font-size:18px;font-weight:800;color:#38bdf8">68%</div>
+              <div style="font-size:9px;color:#64748b">אחוז ניצחון</div>
+            </div>
+            <div style="padding:10px;text-align:center">
+              <div style="font-size:18px;font-weight:800;color:#e2e8f0">11</div>
+              <div style="font-size:9px;color:#64748b">עסקאות</div>
+            </div>
+          </div>
+
+          <!-- Add trade button -->
+          <div style="padding:10px 12px;border-bottom:1px solid #1e293b;display:flex;gap:8px">
+            <button class="watch-btn" onclick="showNewTrade()" style="flex:1;padding:8px">+ עסקה חדשה</button>
+            <button onclick="showMonthlySummary()" style="background:#7c3aed;color:white;border:none;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer">🤖 סיכום AI</button>
+          </div>
+
+          <!-- New trade form -->
+          <div id="newTradeForm" style="display:none;padding:12px;background:#1e293b;border-bottom:1px solid #334155">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+              <input class="watch-input" placeholder="מניה (AAPL)" id="jTicker" style="font-size:13px">
+              <select id="jDir" style="background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;padding:6px;font-size:13px">
+                <option value="long">📈 Long</option>
+                <option value="short">📉 Short</option>
+              </select>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+              <input class="watch-input" placeholder="מחיר כניסה" id="jEntry" type="number" style="font-size:13px">
+              <input class="watch-input" placeholder="כמות" id="jQty" type="number" style="font-size:13px">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+              <input class="watch-input" placeholder="Stop Loss" id="jSL" type="number" style="font-size:13px">
+              <input class="watch-input" placeholder="Take Profit" id="jTP" type="number" style="font-size:13px">
+            </div>
+            <div style="margin-bottom:8px">
+              <select id="jTrend" style="background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;padding:6px;font-size:12px;width:100%">
+                <option value="">כיוון יומי...</option>
+                <option value="bullish">📈 Bullish — שורי</option>
+                <option value="bearish">📉 Bearish — דובי</option>
+                <option value="neutral">➡️ ניטרלי</option>
+              </select>
+            </div>
+            <textarea id="jReason" class="watch-input" placeholder="למה נכנסתי לעסקה? (breakout, חדשות, תבנית...)" style="width:100%;height:56px;resize:none;font-size:12px;padding:8px"></textarea>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="watch-btn" onclick="addTrade()" style="flex:1">שמור עסקה</button>
+              <button onclick="document.getElementById('newTradeForm').style.display='none'" style="background:#334155;color:#e2e8f0;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px">ביטול</button>
+            </div>
+          </div>
+
+          <!-- Trades list -->
+          <div id="tradesList" style="overflow-y:auto;max-height:320px"></div>
+
+          <!-- AI summary overlay -->
+          <div id="aiSummaryOverlay" style="display:none;position:absolute;inset:0;background:#0f172aee;z-index:10;padding:16px;overflow-y:auto">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+              <div style="font-weight:700;font-size:15px">🤖 סיכום AI — מאי 2025</div>
+              <span onclick="document.getElementById('aiSummaryOverlay').style.display='none'" style="cursor:pointer;color:#64748b;font-size:20px">✕</span>
+            </div>
+            <div style="font-size:13px;line-height:1.7;color:#cbd5e1">
+              <p style="margin-bottom:12px">📊 <strong>ביצועים כלליים:</strong> בחודש מאי סגרת 11 עסקאות עם רווח נקי של <span style="color:#4ade80;font-weight:700">+$3,240</span>. אחוז הניצחון שלך עמד על 68% — מעל הממוצע ההיסטורי שלך של 61%. זהו חודש רווחי ברמה טובה.</p>
+              <p style="margin-bottom:12px">🧠 <strong>דפוסי התנהגות:</strong> שמתי לב שהעסקאות הרווחיות ביותר שלך היו בדיוק כשסימנת כיוון יומי "Bullish" לפני הכניסה. ב-3 מקרים שנכנסת ללא כיוון מוגדר — הפסדת ב-2 מהם. נוסף על כך, עסקאות TSLA שלך מציגות תנודתיות גבוהה — רווח גדול אחד ושני הפסדים קטנים.</p>
+              <p style="margin-bottom:12px">⚡ <strong>לשיפור:</strong> הגדר כיוון יומי לפני כל כניסה — זה משפר את התוצאות שלך ב-40%. שקול להקטין פוזיציות ב-TSLA לפני earnings. ה-Stop Loss שלך ב-NVDA היה רחוק מדי — שקול 2% מקסימום.</p>
+              <p>💪 אתה בכיוון הנכון. החלטות הכניסה שלך מבוססות ומקצועיות — המשך כך!</p>
+            </div>
           </div>
         </div>
 
@@ -399,6 +473,46 @@
   <!-- Right panel -->
   <div class="panel">
 
+    <!-- Live Indices -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🌍</span> מדדים מרכזיים — בזמן אמת</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="indicesGrid">
+        <div style="background:#0f172a;border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:12px;color:#94a3b8">S&P 500</div><div style="font-weight:700;font-size:15px">5,308</div></div>
+          <span style="color:#4ade80;font-size:12px;font-weight:700">+0.87%</span>
+        </div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:12px;color:#94a3b8">NASDAQ</div><div style="font-weight:700;font-size:15px">16,742</div></div>
+          <span style="color:#4ade80;font-size:12px;font-weight:700">+1.23%</span>
+        </div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:12px;color:#94a3b8">תל אביב 35</div><div style="font-weight:700;font-size:15px">2,041</div></div>
+          <span style="color:#f87171;font-size:12px;font-weight:700">-0.34%</span>
+        </div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:12px;color:#94a3b8">USD/ILS</div><div style="font-weight:700;font-size:15px">3.682</div></div>
+          <span style="color:#4ade80;font-size:12px;font-weight:700">+0.21%</span>
+        </div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:12px;color:#94a3b8">VIX</div><div style="font-weight:700;font-size:15px">13.8</div></div>
+          <span style="color:#f87171;font-size:12px;font-weight:700">-4.2%</span>
+        </div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:12px;color:#94a3b8">Gold</div><div style="font-weight:700;font-size:15px">$2,318</div></div>
+          <span style="color:#4ade80;font-size:12px;font-weight:700">+0.55%</span>
+        </div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:12px;color:#94a3b8">Oil (WTI)</div><div style="font-weight:700;font-size:15px">$78.4</div></div>
+          <span style="color:#f87171;font-size:12px;font-weight:700">-1.12%</span>
+        </div>
+        <div style="background:#0f172a;border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:12px;color:#94a3b8">Bitcoin</div><div style="font-weight:700;font-size:15px">$62,840</div></div>
+          <span style="color:#4ade80;font-size:12px;font-weight:700">+2.14%</span>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:#475569;text-align:center">מתעדכן כל 60 שניות · Yahoo Finance API</div>
+    </div>
+
     <!-- Stats -->
     <div class="card">
       <div class="card-title"><span class="icon">📊</span> סטטיסטיקות מערכת</div>
@@ -445,6 +559,19 @@
         <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>🎯</span>TipRanks Analyst</div>
         <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>⚡</span>Finnhub WebSocket</div>
         <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px;color:#64748b"><span>➕</span>הוסף ידנית...</div>
+      </div>
+
+      <!-- Israeli sources -->
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid #334155">
+        <div style="font-size:12px;color:#64748b;margin-bottom:8px">🇮🇱 מקורות ישראליים</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <a href="https://maya.tase.co.il" target="_blank" style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px;text-decoration:none;color:#e2e8f0"><span>📋</span>מאיה — TASE</a>
+          <a href="https://www.calcalist.co.il" target="_blank" style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px;text-decoration:none;color:#e2e8f0"><span>📰</span>כלכליסט</a>
+          <a href="https://www.themarker.com" target="_blank" style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px;text-decoration:none;color:#e2e8f0"><span>📊</span>TheMarker</a>
+          <a href="https://www.globes.co.il" target="_blank" style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px;text-decoration:none;color:#e2e8f0"><span>🌐</span>גלובס</a>
+          <a href="https://www.mako.co.il/news-money" target="_blank" style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px;text-decoration:none;color:#e2e8f0"><span>📺</span>ערוץ 12 כלכלה</a>
+          <a href="https://www.ynet.co.il/economy" target="_blank" style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px;text-decoration:none;color:#e2e8f0"><span>📡</span>Ynet כסף</a>
+        </div>
       </div>
     </div>
 
@@ -600,6 +727,63 @@ setInterval(() => {
 
 // Auto-show toasts occasionally
 setInterval(showToast, 12000);
+
+// ── Trading Journal ───────────────────────────────────────────────────────
+const demoTrades = [
+  { ticker:'NVDA', direction:'long',  entry:890, exit:934,  qty:10, trend:'bullish', reason:'Blackwell demand beat — gap up on volume', status:'closed' },
+  { ticker:'AAPL', direction:'long',  entry:212, exit:219,  qty:20, trend:'bullish', reason:'Support bounce + RSI oversold', status:'closed' },
+  { ticker:'TSLA', direction:'short', entry:178, exit:163,  qty:15, trend:'bearish', reason:'Breakdown below 50MA + weak China data', status:'closed' },
+  { ticker:'SPY',  direction:'long',  entry:524, exit:null, qty:5,  trend:'bullish', reason:'Trend continuation — open position', status:'open' },
+];
+
+function renderTrades() {
+  const el = document.getElementById('tradesList');
+  el.innerHTML = demoTrades.map((t, i) => {
+    const pnl = t.exit ? ((t.direction==='long' ? t.exit-t.entry : t.entry-t.exit) * t.qty) : null;
+    const pnlPct = t.exit ? ((t.direction==='long' ? t.exit-t.entry : t.entry-t.exit)/t.entry*100) : null;
+    const color = pnl === null ? '#38bdf8' : pnl > 0 ? '#4ade80' : '#f87171';
+    const trendIcon = t.trend==='bullish'?'📈':t.trend==='bearish'?'📉':'➡️';
+    return `<div style="padding:10px 12px;border-bottom:1px solid #1e293b">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-weight:700;font-size:14px">${t.ticker}</span>
+          <span style="font-size:10px;background:${t.direction==='long'?'#16a34a22':'#ef444422'};color:${t.direction==='long'?'#4ade80':'#f87171'};padding:1px 6px;border-radius:8px;font-weight:600">${t.direction.toUpperCase()}</span>
+          <span style="font-size:11px">${trendIcon}</span>
+        </div>
+        <span style="font-weight:700;font-size:14px;color:${color}">${pnl!==null?(pnl>0?'+':'')+`$${pnl.toFixed(0)}`:'פתוח'}</span>
+      </div>
+      <div style="font-size:11px;color:#64748b;margin-bottom:4px">
+        $${t.entry} → ${t.exit?`$${t.exit}`:'—'} × ${t.qty} ${pnlPct!==null?`| <span style="color:${color}">${pnlPct>0?'+':''}${pnlPct.toFixed(1)}%</span>`:''}
+      </div>
+      <div style="font-size:11px;color:#94a3b8;font-style:italic">"${t.reason}"</div>
+    </div>`;
+  }).join('');
+}
+
+function showNewTrade() {
+  document.getElementById('newTradeForm').style.display = 'block';
+}
+
+function addTrade() {
+  const ticker = (document.getElementById('jTicker').value||'').toUpperCase().trim();
+  const dir = document.getElementById('jDir').value;
+  const entry = parseFloat(document.getElementById('jEntry').value)||0;
+  const qty = parseFloat(document.getElementById('jQty').value)||1;
+  const trend = document.getElementById('jTrend').value;
+  const reason = document.getElementById('jReason').value;
+  if (!ticker || !entry) { alert('מלא לפחות מניה ומחיר כניסה'); return; }
+  demoTrades.unshift({ ticker, direction:dir, entry, exit:null, qty, trend, reason, status:'open' });
+  renderTrades();
+  document.getElementById('newTradeForm').style.display = 'none';
+  ['jTicker','jEntry','jQty','jSL','jTP','jReason'].forEach(id => document.getElementById(id).value = '');
+}
+
+function showMonthlySummary() {
+  document.getElementById('aiSummaryOverlay').style.display = 'block';
+}
+
+// init
+setTimeout(renderTrades, 100);
 
 function generateCodes() {
   const note = document.getElementById('codeNote').value.trim() || 'ללא הערה';

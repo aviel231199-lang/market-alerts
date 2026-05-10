@@ -32,6 +32,19 @@ FEEDS: list[tuple[str, str]] = [
     ("SeekingAlpha", "https://seekingalpha.com/market_currents.xml"),
     ("WSJ-Markets", "https://feeds.content.dowjones.io/public/rss/RSSMarketsMain"),
     ("Bloomberg-Markets", "https://feeds.bloomberg.com/markets/news.rss"),
+    # ── Israeli sources ──────────────────────────────────────────────────
+    # Maya — TASE official disclosure filings
+    ("Maya-TASE", "https://maya.tase.co.il/rss/RssFeed.aspx?feedType=3"),
+    # Calcalist (כלכליסט) — leading Israeli financial news
+    ("Calcalist", "https://www.calcalist.co.il/rss/AjaxPage,7340,L-1,00.xml"),
+    # TheMarker (הארץ כלכלה)
+    ("TheMarker", "https://www.themarker.com/cmlink/1.4688995"),
+    # Globes — ישראל עסקים
+    ("Globes", "https://www.globes.co.il/webservice/rss/rssfeeder.asmx/FeederNode?iID=585"),
+    # Ynet Money
+    ("Ynet-Money", "https://www.ynet.co.il/Integration/StoryRss2.xml?catid=5"),
+    # N12 / ערוץ 12 כלכלה (Channel 12 economy)
+    ("N12-Economy", "https://www.mako.co.il/rss/31750a2610f26110VgnVCM1000004463fa90RCRD.xml"),
 ]
 
 
