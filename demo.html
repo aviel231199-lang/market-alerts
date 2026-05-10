@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Alerts — Demo</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+  /* Layout */
+  .layout { display: flex; gap: 24px; padding: 24px; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+
+  /* Header */
+  .top-bar { background: #1e293b; border-bottom: 1px solid #334155; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-size: 20px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+  .logo span { font-size: 22px; }
+  .status-badge { background: #16a34a22; color: #4ade80; border: 1px solid #16a34a55; border-radius: 20px; padding: 4px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* Phone mockup */
+  .phone { width: 320px; flex-shrink: 0; }
+  .phone-frame { background: #1e1e2e; border-radius: 40px; padding: 12px; box-shadow: 0 0 0 2px #334155, 0 30px 60px #00000088; width: 320px; }
+  .phone-inner { background: #0f172a; border-radius: 30px; overflow: hidden; height: 620px; position: relative; }
+  .phone-top { background: #1e293b; padding: 14px 20px 10px; display: flex; align-items: center; justify-content: space-between; }
+  .phone-title { font-size: 17px; font-weight: 600; }
+  .phone-icons { display: flex; gap: 10px; font-size: 18px; cursor: pointer; }
+  .phone-content { height: calc(100% - 50px); overflow-y: auto; scrollbar-width: none; }
+  .phone-content::-webkit-scrollbar { display: none; }
+
+  /* News items */
+  .news-item { padding: 12px 16px; border-bottom: 1px solid #1e293b; cursor: pointer; transition: background .15s; }
+  .news-item:hover { background: #1e293b55; }
+  .news-item.breaking { border-right: 3px solid #ef4444; background: #ef444408; }
+  .news-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 4px; text-transform: uppercase; }
+  .badge-breaking { background: #ef4444; color: white; }
+  .badge-markets { background: #3b82f6; color: white; }
+  .badge-stocks { background: #8b5cf6; color: white; }
+  .badge-tg { background: #0088cc; color: white; }
+  .news-title { font-size: 13.5px; font-weight: 500; line-height: 1.4; margin-bottom: 6px; color: #e2e8f0; }
+  .news-meta { display: flex; align-items: center; justify-content: space-between; }
+  .news-source { font-size: 11px; color: #64748b; }
+  .news-tickers { display: flex; gap: 4px; }
+  .ticker { background: #1e40af22; color: #60a5fa; border: 1px solid #1e40af44; border-radius: 4px; padding: 1px 5px; font-size: 10px; font-weight: 600; font-family: monospace; }
+
+  /* Right panel */
+  .panel { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+  /* Cards */
+  .card { background: #1e293b; border-radius: 16px; padding: 20px; border: 1px solid #334155; }
+  .card-title { font-size: 14px; font-weight: 600; color: #94a3b8; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .card-title .icon { font-size: 16px; }
+
+  /* Watchlist */
+  .watch-items { display: flex; flex-wrap: wrap; gap: 8px; }
+  .watch-chip { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+  .chip-ticker { background: #1e40af22; color: #60a5fa; border: 1px solid #1e40af55; }
+  .chip-keyword { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; }
+  .chip-icon { font-size: 14px; }
+  .watch-add { display: flex; gap: 8px; margin-top: 14px; }
+  .watch-input { flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 8px 12px; color: #e2e8f0; font-size: 13px; outline: none; }
+  .watch-input:focus { border-color: #38bdf8; }
+  .watch-btn { background: #38bdf8; color: #0f172a; border: none; border-radius: 8px; padding: 8px 14px; font-weight: 700; font-size: 13px; cursor: pointer; }
+
+  /* Sources */
+  .sources { display: flex; flex-direction: column; gap: 10px; }
+  .source-row { display: flex; align-items: center; justify-content: space-between; }
+  .source-name { font-size: 13px; color: #e2e8f0; display: flex; align-items: center; gap: 8px; }
+  .source-icon { font-size: 16px; }
+  .toggle { width: 38px; height: 20px; background: #16a34a; border-radius: 10px; position: relative; cursor: pointer; transition: background .2s; }
+  .toggle.off { background: #334155; }
+  .toggle::after { content:''; position:absolute; width:16px; height:16px; background:white; border-radius:50%; top:2px; right:2px; transition: right .2s; }
+  .toggle.off::after { right: auto; left: 2px; }
+
+  /* Stats */
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .stat { background: #0f172a; border-radius: 12px; padding: 14px; text-align: center; border: 1px solid #1e293b; }
+  .stat-num { font-size: 26px; font-weight: 800; color: #38bdf8; }
+  .stat-label { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+  /* Notification toast */
+  .toast-area { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+  .toast { background: #1e293b; border: 1px solid #38bdf8; border-radius: 14px; padding: 14px 18px; display: flex; gap: 12px; align-items: flex-start; min-width: 300px; box-shadow: 0 8px 32px #00000066; animation: slideIn .3s ease; pointer-events: all; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+  .toast-icon { font-size: 26px; }
+  .toast-body { flex: 1; }
+  .toast-title { font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 3px; }
+  .toast-text { font-size: 12px; color: #94a3b8; line-height: 1.4; }
+  .toast-time { font-size: 11px; color: #475569; margin-top: 4px; }
+  .toast-close { color: #475569; cursor: pointer; font-size: 16px; }
+
+  /* Alert button */
+  .demo-btn { background: #7c3aed; color: white; border: none; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background .2s; }
+  .demo-btn:hover { background: #6d28d9; }
+
+  /* Pipeline diagram */
+  .pipeline { display: flex; align-items: center; gap: 0; flex-wrap: wrap; justify-content: center; }
+  .pipe-node { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 10px 14px; font-size: 12px; text-align: center; }
+  .pipe-node .pn-icon { font-size: 20px; margin-bottom: 4px; }
+  .pipe-node .pn-label { color: #94a3b8; font-size: 10px; }
+  .pipe-arrow { color: #38bdf8; font-size: 18px; padding: 0 6px; }
+
+  @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .tab-bar { display: flex; background: #1e293b; border-bottom: 1px solid #334155; }
+  .tab { flex: 1; padding: 10px; text-align: center; font-size: 12px; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; }
+  .tab.active { color: #38bdf8; border-bottom-color: #38bdf8; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="logo"><span>📈</span> Market Alerts Platform</div>
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="status-badge"><div class="dot"></div> Live — מאסף חדשות</div>
+    <!-- Hebrew toggle -->
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:#94a3b8">
+      🇮🇱 עברית
+      <div class="toggle off" id="hebrewToggle" onclick="toggleHebrew(this)" style="margin:0"></div>
+    </label>
+    <button class="demo-btn" onclick="showToast()">🔔 הצג התראה לדוגמה</button>
+  </div>
+</div>
+
+<div class="toast-area" id="toastArea"></div>
+
+<div class="layout">
+
+  <!-- Phone -->
+  <div class="phone">
+    <div style="text-align:center;margin-bottom:10px;font-size:12px;color:#64748b">📱 אפליקציית מובייל (Flutter)</div>
+    <div class="phone-frame">
+      <div class="phone-inner">
+        <div class="tab-bar">
+          <div class="tab active" onclick="showTab('feed',this)">📰 פיד</div>
+          <div class="tab" onclick="showTab('watchlist',this)">⭐ Watchlist</div>
+          <div class="tab" onclick="showTab('reports',this)">🤖 דוחות</div>
+          <div class="tab" onclick="showTab('settings',this)">⚙️ הגדרות</div>
+        </div>
+
+        <div id="tab-feed" class="phone-content">
+          <div class="news-item breaking">
+            <div class="news-badge badge-breaking">Breaking</div>
+            <div class="news-title">Fed Chair Powell signals potential rate pause amid cooling inflation data</div>
+            <div class="news-meta">
+              <div class="news-source">Bloomberg · 2 דק'</div>
+              <div class="news-tickers"><span class="ticker">SPY</span><span class="ticker">TLT</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-badge badge-stocks">מניות</div>
+            <div class="news-title">Apple reports record Q2 revenue, iPhone sales beat expectations by 8%</div>
+            <div class="news-meta">
+              <div class="news-source">WSJ · 5 דק'</div>
+              <div class="news-tickers"><span class="ticker">AAPL</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-badge badge-markets">שווקים</div>
+            <div class="news-title">NVIDIA surges 4% after Blackwell GPU demand exceeds supply projections</div>
+            <div class="news-meta">
+              <div class="news-source">CNBC · 11 דק'</div>
+              <div class="news-tickers"><span class="ticker">NVDA</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-badge badge-tg">Telegram</div>
+            <div class="news-title">🚨 TSLA — earnings whisper number $1.92 vs consensus $1.78. Options market pricing 8% move</div>
+            <div class="news-meta">
+              <div class="news-source">WallStreetBets · 14 דק'</div>
+              <div class="news-tickers"><span class="ticker">TSLA</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-badge badge-markets">שווקים</div>
+            <div class="news-title">Oil prices drop 3% as Saudi Arabia signals production increase for July</div>
+            <div class="news-meta">
+              <div class="news-source">Reuters · 22 דק'</div>
+              <div class="news-tickers"><span class="ticker">USO</span><span class="ticker">XOM</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-badge badge-stocks">מניות</div>
+            <div class="news-title">Microsoft Azure cloud revenue grows 31% YoY, beating analyst estimates of 27%</div>
+            <div class="news-meta">
+              <div class="news-source">MarketWatch · 28 דק'</div>
+              <div class="news-tickers"><span class="ticker">MSFT</span></div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-badge badge-stocks">מניות</div>
+            <div class="news-title">Amazon Prime Day 2025 drives 12% spike in AWS sign-ups, analysts note</div>
+            <div class="news-meta">
+              <div class="news-source">Investing · 35 דק'</div>
+              <div class="news-tickers"><span class="ticker">AMZN</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-watchlist" class="phone-content" style="display:none;padding:14px">
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:12px">המניות והמילות מפתח שלך:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">
+            <span class="watch-chip chip-ticker">📊 AAPL</span>
+            <span class="watch-chip chip-ticker">📊 NVDA</span>
+            <span class="watch-chip chip-ticker">📊 TSLA</span>
+            <span class="watch-chip chip-ticker">📊 MSFT</span>
+            <span class="watch-chip chip-keyword">🔍 rate hike</span>
+            <span class="watch-chip chip-keyword">🔍 Fed</span>
+            <span class="watch-chip chip-keyword">🔍 earnings</span>
+          </div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:8px">הוסף מניה או מילת מפתח:</div>
+          <div class="watch-add">
+            <input class="watch-input" placeholder="GOOGL / inflation..." id="watchInput">
+            <button class="watch-btn" onclick="addWatch()">+</button>
+          </div>
+        </div>
+
+        <div id="tab-reports" class="phone-content" style="display:none;padding:14px">
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:12px">🤖 ניתוח דוחות SEC עם AI</div>
+          <div style="display:flex;gap:8px;margin-bottom:14px">
+            <input id="reportTicker" class="watch-input" placeholder="AAPL, NVDA, TSLA..." style="flex:1">
+            <select id="reportType" style="background:#0f172a;border:1px solid #334155;border-radius:8px;color:#e2e8f0;padding:6px 8px;font-size:12px">
+              <option value="10-Q">10-Q רבעוני</option>
+              <option value="10-K">10-K שנתי</option>
+              <option value="8-K">8-K אירוע</option>
+            </select>
+            <button class="watch-btn" onclick="runAnalysis()">נתח</button>
+          </div>
+          <div id="reportResult" style="display:none">
+            <div style="background:#16a34a11;border:1px solid #16a34a44;border-radius:10px;padding:12px;margin-bottom:10px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <span style="font-size:22px">📈</span>
+                <div>
+                  <div style="font-weight:700;font-size:14px" id="rCompany">Apple Inc. (AAPL)</div>
+                  <div style="font-size:11px;color:#64748b" id="rPeriod">10-Q · Q1 2025</div>
+                </div>
+                <span style="margin-right:auto;background:#16a34a;color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px">BULLISH</span>
+              </div>
+              <div style="font-size:12px;color:#94a3b8;line-height:1.5" id="rSummary">Apple posted record Q1 revenue of $124.3B, driven by strong iPhone 16 sales and Services growth of 14% YoY. EPS of $2.40 beat consensus of $2.35.</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">
+              <div style="background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:8px;text-align:center">
+                <div style="font-size:10px;color:#64748b">הכנסות</div>
+                <div style="font-weight:700;font-size:14px;color:#38bdf8" id="rRevenue">$124.3B</div>
+                <div style="font-size:10px;color:#4ade80">+4.1% YoY</div>
+              </div>
+              <div style="background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:8px;text-align:center">
+                <div style="font-size:10px;color:#64748b">רווח נקי</div>
+                <div style="font-weight:700;font-size:14px;color:#38bdf8" id="rIncome">$36.3B</div>
+                <div style="font-size:10px;color:#4ade80">+7.9% YoY</div>
+              </div>
+              <div style="background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:8px;text-align:center">
+                <div style="font-size:10px;color:#64748b">EPS</div>
+                <div style="font-weight:700;font-size:14px;color:#38bdf8" id="rEps">$2.40</div>
+                <div style="font-size:10px;color:#4ade80">vs $2.35</div>
+              </div>
+            </div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:6px">✅ נקודות מפתח</div>
+            <div style="font-size:11px;color:#94a3b8;line-height:1.8" id="rHighlights">
+              • Services revenue grew 14% YoY to $26.3B<br>
+              • iPhone revenue $69.1B, beat estimates by 3%<br>
+              • Raised dividend by 4%, $110B buyback authorized
+            </div>
+            <div style="font-size:12px;font-weight:600;margin:8px 0 6px">⚠️ סיכונים</div>
+            <div style="font-size:11px;color:#f97316;line-height:1.8">
+              • China revenue declined 11% amid regulatory pressure<br>
+              • Mac and iPad sales below expectations
+            </div>
+          </div>
+          <div id="reportLoading" style="display:none;text-align:center;padding:20px">
+            <div style="font-size:24px;animation:spin 1s linear infinite;display:inline-block">⚙️</div>
+            <div style="font-size:12px;color:#64748b;margin-top:8px">מוריד דוח מ-SEC EDGAR<br>ומנתח עם Claude AI...</div>
+          </div>
+        </div>
+
+        <div id="tab-settings" class="phone-content" style="display:none;padding:14px">
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:14px">מקורות פעילים:</div>
+          <div class="sources">
+            <div class="source-row"><span class="source-name"><span class="source-icon">🔵</span>Bloomberg RSS</span><div class="toggle"></div></div>
+            <div class="source-row"><span class="source-name"><span class="source-icon">📰</span>Wall Street Journal</span><div class="toggle"></div></div>
+            <div class="source-row"><span class="source-name"><span class="source-icon">📺</span>CNBC Markets</span><div class="toggle"></div></div>
+            <div class="source-row"><span class="source-name"><span class="source-icon">📈</span>Investing.com</span><div class="toggle"></div></div>
+            <div class="source-row"><span class="source-name"><span class="source-icon">📊</span>MarketWatch</span><div class="toggle"></div></div>
+            <div class="source-row"><span class="source-name"><span class="source-icon">📡</span>Reuters Business</span><div class="toggle"></div></div>
+            <div class="source-row"><span class="source-name"><span class="source-icon">💬</span>Telegram channels</span><div class="toggle off"></div></div>
+          </div>
+          <div style="margin-top:20px;font-size:13px;color:#94a3b8">שעות שקט:</div>
+          <div style="margin-top:10px;display:flex;align-items:center;gap:10px;font-size:13px">
+            <input type="time" value="23:00" style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px">
+            <span style="color:#64748b">עד</span>
+            <input type="time" value="07:00" style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:5px 8px;color:#e2e8f0;font-size:12px">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="panel">
+
+    <!-- Stats -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> סטטיסטיקות מערכת</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-num" id="newsCount">847</div><div class="stat-label">חדשות היום</div></div>
+        <div class="stat"><div class="stat-num">11</div><div class="stat-label">מקורות פעילים</div></div>
+        <div class="stat"><div class="stat-num" id="alertCount">23</div><div class="stat-label">התראות נשלחו</div></div>
+      </div>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="card">
+      <div class="card-title"><span class="icon">⚙️</span> איך זה עובד — ארכיטקטורה</div>
+      <div class="pipeline">
+        <div class="pipe-node"><div class="pn-icon">📡</div>RSS Feeds<div class="pn-label">Bloomberg, WSJ, CNBC...</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node"><div class="pn-icon">🔄</div>Dedup<div class="pn-label">Redis SHA256</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node"><div class="pn-icon">🗄️</div>PostgreSQL<div class="pn-label">שמירת חדשות</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node"><div class="pn-icon">🎯</div>Matcher<div class="pn-label">Watchlist filter</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node"><div class="pn-icon">🔔</div>FCM Push<div class="pn-label">iOS + Android</div></div>
+      </div>
+      <div style="margin-top:12px;display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b">
+        <div class="dot" style="background:#38bdf8"></div>
+        RSS נסרק כל 45 שניות · Telegram בזמן אמת
+      </div>
+    </div>
+
+    <!-- Sources -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🌐</span> מקורות החדשות</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>🔵</span>Bloomberg Markets</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>📰</span>Wall Street Journal</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>📺</span>CNBC (2 feeds)</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>📈</span>Investing.com (2)</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>📊</span>MarketWatch (2)</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>🦅</span>Reuters Business</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>💰</span>Yahoo Finance</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>🔍</span>Seeking Alpha</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px"><span>💬</span>Telegram channels</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;padding:8px;background:#0f172a;border-radius:8px;color:#64748b"><span>➕</span>הוסף ידנית...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Hebrew translations for demo
+const hebrewTitles = [
+  'פאואל מהפד מרמז על הפסקה אפשרית בריבית על רקע נתוני אינפלציה מתקררים',
+  'אפל מדווחת על הכנסות שיא ברבעון השני — מכירות אייפון עלו ב-8% מעל הציפיות',
+  'NVIDIA קופצת 4% לאחר שביקוש ל-GPU מסוג Blackwell עולה על תחזיות ההיצע',
+  '🚨 TSLA — ה-Whisper Number הוא $1.92 לעומת קונצנזוס $1.78. שוק האופציות מתמחר תנועה של 8%',
+  'מחירי הנפט יורדים 3% לאחר שסעודיה מסמנת על העלאת ייצור ביולי',
+  'Microsoft Azure — הכנסות ענן גדלות ב-31% לעומת השנה שעברה, מכות ציפיות אנליסטים של 27%',
+  'Amazon Prime Day 2025 מזיק עלייה של 12% בהרשמות AWS, מציינים אנליסטים',
+];
+let hebrewOn = false;
+const origTitles = [];
+
+function showTab(name, el) {
+  document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+  document.getElementById('tab-' + name).style.display = 'block';
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toggleHebrew(el) {
+  hebrewOn = !hebrewOn;
+  el.classList.toggle('off', !hebrewOn);
+  const titles = document.querySelectorAll('#tab-feed .news-title');
+  titles.forEach((t, i) => {
+    if (!origTitles[i]) origTitles[i] = t.textContent;
+    t.textContent = hebrewOn ? (hebrewTitles[i] || origTitles[i]) : origTitles[i];
+    t.style.direction = hebrewOn ? 'rtl' : 'ltr';
+    t.style.textAlign = hebrewOn ? 'right' : 'left';
+  });
+}
+
+const reportData = {
+  'AAPL': { company:'Apple Inc.', period:'10-Q · Q1 2025', revenue:'$124.3B', income:'$36.3B', eps:'$2.40', sentiment:'📈 BULLISH', color:'#16a34a',
+    summary:'Apple פרסמה הכנסות שיא של $124.3B, מונעות ממכירות iPhone 16 חזקות וצמיחת Services של 14% YoY. EPS של $2.40 הכה את הקונצנזוס $2.35.',
+    highlights:'• הכנסות Services גדלו 14% YoY עד $26.3B<br>• הכנסות iPhone $69.1B, עלו על ציפיות ב-3%<br>• דיבידנד הועלה ב-4%, רכישה חוזרת $110B אושרה',
+    risks:'• הכנסות סין ירדו 11% בשל לחץ רגולטורי<br>• מכירות Mac ו-iPad מתחת לציפיות' },
+  'NVDA': { company:'NVIDIA Corp.', period:'10-Q · Q3 FY2025', revenue:'$35.1B', income:'$19.3B', eps:'$0.78', sentiment:'🚀 BULLISH', color:'#16a34a',
+    summary:'NVIDIA שברה שיאים עם הכנסות של $35.1B — עלייה של 94% YoY — מונעת מביקוש חסר תקדים ל-Blackwell GPU בקרב ספקי הענן הגדולים.',
+    highlights:'• Data Center הכנסות $30.8B, +112% YoY<br>• Blackwell ב-ramp מלא — ביקוש עולה על היצע<br>• מרווח גולמי 74.6%, שיפור לעומת 70% אשתקד',
+    risks:'• תלות גבוהה ב-3 לקוחות ענן גדולים<br>• סיכוני שרשרת אספקה ב-CoWoS packaging' },
+  'TSLA': { company:'Tesla Inc.', period:'10-Q · Q1 2025', revenue:'$19.3B', income:'$1.13B', eps:'$0.34', sentiment:'➡️ NEUTRAL', color:'#f59e0b',
+    summary:'טסלה הציגה ירידה של 9% בהכנסות YoY עקב קיצוצי מחירים והאטה בביקוש. תוצאות Autopilot/FSD חזקות, אך גפא רכב לחוצה ב-12.5%.',
+    highlights:'• FSD v13 הושק ב-1M+ רכבים<br>• Cybertruck הגיע ל-profitability<br>• Megapack הכנסות $1.8B, +67% YoY',
+    risks:'• גפא רכב 12.5%, נמוך מ-19% אשתקד<br>• תחרות גוברת מיצרנים סינים' },
+};
+
+function runAnalysis() {
+  const ticker = document.getElementById('reportTicker').value.trim().toUpperCase();
+  const loading = document.getElementById('reportLoading');
+  const result = document.getElementById('reportResult');
+  if (!ticker) return;
+  result.style.display = 'none';
+  loading.style.display = 'block';
+  setTimeout(() => {
+    loading.style.display = 'none';
+    const d = reportData[ticker] || reportData['AAPL'];
+    document.getElementById('rCompany').textContent = d.company + ' (' + ticker + ')';
+    document.getElementById('rPeriod').textContent = d.period;
+    document.getElementById('rSummary').textContent = d.summary;
+    document.getElementById('rRevenue').textContent = d.revenue;
+    document.getElementById('rIncome').textContent = d.income;
+    document.getElementById('rEps').textContent = d.eps;
+    document.getElementById('rHighlights').innerHTML = d.highlights;
+    result.style.display = 'block';
+  }, 2200);
+}
+
+const toasts = [
+  { ticker: 'AAPL', title: '📈 AAPL: Bloomberg', text: 'Apple reports record Q2 revenue — iPhone sales beat by 8%' },
+  { ticker: 'NVDA', title: '🚀 NVDA: CNBC', text: 'NVIDIA surges 4% after Blackwell GPU demand exceeds supply' },
+  { ticker: 'Fed', title: '🏦 Fed: WSJ', text: 'Fed Chair Powell signals potential rate pause amid cooling inflation' },
+  { ticker: 'TSLA', title: '⚡ TSLA: Telegram', text: 'Options market pricing 8% move ahead of earnings tomorrow' },
+];
+let toastIdx = 0;
+
+function showToast() {
+  const t = toasts[toastIdx % toasts.length];
+  toastIdx++;
+  const area = document.getElementById('toastArea');
+  const div = document.createElement('div');
+  div.className = 'toast';
+  div.innerHTML = `
+    <div class="toast-icon">🔔</div>
+    <div class="toast-body">
+      <div class="toast-title">${t.title}</div>
+      <div class="toast-text">${t.text}</div>
+      <div class="toast-time">עכשיו</div>
+    </div>
+    <div class="toast-close" onclick="this.parentElement.remove()">✕</div>
+  `;
+  area.appendChild(div);
+  setTimeout(() => div.remove(), 5000);
+
+  // bump stats
+  document.getElementById('alertCount').textContent = parseInt(document.getElementById('alertCount').textContent) + 1;
+}
+
+function addWatch() {
+  const v = document.getElementById('watchInput').value.trim();
+  if (!v) return;
+  document.getElementById('watchInput').value = '';
+  // just visual feedback
+  const chip = document.createElement('span');
+  chip.className = 'watch-chip ' + (v === v.toUpperCase() && v.length <= 5 ? 'chip-ticker' : 'chip-keyword');
+  chip.textContent = (v === v.toUpperCase() && v.length <= 5 ? '📊 ' : '🔍 ') + v;
+  document.querySelector('#tab-watchlist div').appendChild(chip);
+}
+
+// Animate news counter
+setInterval(() => {
+  const el = document.getElementById('newsCount');
+  el.textContent = parseInt(el.textContent) + Math.floor(Math.random() * 3);
+}, 8000);
+
+// Auto-show toasts occasionally
+setInterval(showToast, 12000);
+</script>
+</body>
+</html>

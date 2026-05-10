@@ -24,6 +24,9 @@ class Settings(BaseSettings):
 
     rss_poll_seconds: int = 45
 
+    anthropic_api_key: str | None = None  # for AI analysis + Hebrew translation
+    finnhub_api_key: str | None = None    # free at finnhub.io
+
     # Max request body size (bytes) enforced at middleware level
     max_body_size: int = 1 * 1024 * 1024  # 1 MB
 

@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from .api import auth, devices, news, sources, watchlist
+from .api import analyze, auth, devices, news, sources, watchlist
 from .config import settings
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -49,6 +49,7 @@ app.include_router(devices.router)
 app.include_router(watchlist.router)
 app.include_router(news.router)
 app.include_router(sources.router)
+app.include_router(analyze.router)
 
 
 @app.get("/health")

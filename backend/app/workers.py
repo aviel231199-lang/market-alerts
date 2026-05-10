@@ -5,7 +5,7 @@ import logging
 
 import redis.asyncio as aioredis
 
-from .collectors import rss_collector, telegram_collector
+from .collectors import finnhub_collector, rss_collector, telegram_collector
 from .config import settings
 from .matcher import engine as matcher_engine
 from .push import fcm
@@ -22,6 +22,7 @@ async def main() -> None:
         asyncio.create_task(telegram_collector.run(redis), name="telegram"),
         asyncio.create_task(matcher_engine.run(redis), name="matcher"),
         asyncio.create_task(fcm.run(redis), name="fcm"),
+        asyncio.create_task(finnhub_collector.run(redis), name="finnhub"),
     ]
     try:
         await asyncio.gather(*tasks)

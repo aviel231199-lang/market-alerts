@@ -17,6 +17,10 @@ from ..pipeline.store import RawNews, ingest
 log = logging.getLogger(__name__)
 
 FEEDS: list[tuple[str, str]] = [
+    # Google News Finance
+    ("Google-Markets", "https://news.google.com/rss/search?q=stock+market+finance&hl=en-US&gl=US&ceid=US:en"),
+    ("Google-Earnings", "https://news.google.com/rss/search?q=earnings+report+beats+misses&hl=en-US&gl=US&ceid=US:en"),
+    # Existing feeds
     ("Investing", "https://www.investing.com/rss/news_25.rss"),
     ("Investing-Stocks", "https://www.investing.com/rss/news_285.rss"),
     ("MarketWatch-TopStories", "https://feeds.content.dowjones.io/public/rss/mw_topstories"),

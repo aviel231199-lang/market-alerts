@@ -19,6 +19,9 @@ dependencies = [
     "pydantic-settings>=2.5",
     "python-multipart>=0.0.12",
     "apscheduler>=3.10",
+    "anthropic>=0.40",
+    "pypdf>=4.0",
+    "websockets>=13.0",
 ]
 
 [tool.setuptools.packages.find]

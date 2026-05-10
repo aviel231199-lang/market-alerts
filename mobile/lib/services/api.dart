@@ -56,4 +56,26 @@ class Api {
     if (r.statusCode >= 400) throw Exception(r.body);
     return jsonDecode(r.body) as List;
   }
+
+  static Future<String> translateToHebrew(String text) async {
+    final r = await http.post(Uri.parse('$baseUrl/analyze/translate'),
+        headers: _headers(), body: jsonEncode({'text': text}));
+    if (r.statusCode >= 400) throw Exception(r.body);
+    return jsonDecode(r.body)['translation'] as String;
+  }
+
+  static Future<List<String>> translateBatch(List<String> texts) async {
+    final r = await http.post(Uri.parse('$baseUrl/analyze/translate'),
+        headers: _headers(), body: jsonEncode({'texts': texts}));
+    if (r.statusCode >= 400) throw Exception(r.body);
+    return (jsonDecode(r.body)['translations'] as List).cast<String>();
+  }
+
+  static Future<Map<String, dynamic>> analyzeReport(String ticker, {String formType = '10-Q'}) async {
+    final r = await http.get(
+        Uri.parse('$baseUrl/analyze/report/$ticker?form_type=$formType'),
+        headers: _headers(json: false));
+    if (r.statusCode >= 400) throw Exception(r.body);
+    return jsonDecode(r.body) as Map<String, dynamic>;
+  }
 }
